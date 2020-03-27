@@ -1,0 +1,196 @@
+---
+title: "Data Analysis for a Fictional Trial of Dietary Supplements"
+author: "Tim Liptrot"
+output:
+  html_notebook:
+    code_folding: hide
+    toc: yes
+  pdf_document:
+    toc: yes
+  html_document:
+    df_print: paged
+    toc: yes
+---
+
+```{r, collapse=TRUE, eval=TRUE, include=FALSE, echo=FALSE, results = 'hide'}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Introduction
+
+The data for this test comes from Innovations for Poverty Actions Stata test, which I took in December. In the challenge, I began with some unclean data from a fictional randomized trial in which subjects were given dietary supplements and asked to complete mental math problems. The project demonstrates my data cleaning skills and my ability to explain the results of statistical tests to general audiences.
+
+### Problem Statement
+
+A company marketing dietary supplement has carried out an experiment on the relationship between supplement consumption and formal reasoning speed. Study participants took one of four supplements (or none) and executed a series of mental math problems. The company would like to know if their data shows that the supplements make people smarter. Unfortunately, their data is not neatly organized. For example, the time is mm.ss format.
+
+### Packages and data loading
+
+In this demonstration, I will use the Tidyverse library. To learn more about the packages, I recommend Wickham and Grolemund 2016, "R for Data Science".
+
+```{r, collapse=TRUE, include=TRUE, echo=TRUE, results='hold', warning=FALSE, message=FALSE}
+
+library(tidyverse)
+library(ggthemes)
+library(kableExtra)
+library(ggplot2)
+
+
+setwd("C:\\Users\\liptr\\Documents\\R\\vitamins")
+vit <- read_csv("vitamins\\vitamins.csv")
+
+
+```
+
+# Data cleaning
+
+First, let us take a look at this data. We can use the kable package to make easy to read tables.
+
+```{r}
+kable(head(vit))  %>% kable_styling(bootstrap_options = c("striped", "hover", "responsive")) %>% scroll_box(width = "100%", height = "250px")
+
+```
+
+Already, I can see three glaring problems in the data. 
+* One is that the time isn in mm.ss, rather than number of seconds. Our t-test tools will need time in number of seconds. 
+* There are several misnamed treatments (with names like b, n, r, 1 and 2). 
+* It is reduntant to have one variable labeled treatment and one variable for the type of treatment. I will later collapse them into one file with control, A, B, C and D as the variables.
+
+### The Time Variable
+
+First I calculate the new time variable as an integer number of se.
+
+```{r}
+
+vit <- mutate(vit, 
+       min = time%/%1,
+       sec = (time - min)*100 + 60*min,
+       position = rownames(vit))
+
+#print(filter(vit, position=))
+
+```
+
+It's important to check that this formula is working correctly. The easiest way to do so is to make a quick histogram of the times. 
+
+```{r, warning=FALSE, message=FALSE}
+
+p <- ggplot(vit, mapping = aes(sec))
+p + geom_histogram(color="black", fill="lightblue") + theme_pander()
+
+```
+
+Since there are no suspicious gaps or shapes in this histogram, it looks like my equation is working just fine.
+
+### Cleaning the Treatment Categories
+
+Now let us look at our labeling of the subjects. Firstly, there is a redundancy between the treatment column, which shows a binary for whether the subject is in the control group, and the supplement column. I simplify this by simply changing the sup category to "Control" for all subjects in the control group. I also rename that variable sup, to shorten the code later.
+
+Then I count all of the different values in the sup variable.
+
+```{r}
+
+vit <- rename(vit, sup = supplement)
+
+vit <- mutate(vit, sup = replace(sup, treat ==0, "CONTROL"))
+
+count(vit, sup)
+
+```
+
+From this count we can see there are many poorly labeled treatments. Most treaments are labeled with a single capital letter, but some are lower case, some are numbers, and some are even other random letters (n and r). To solve this, I remove all spaces and uppercase all the letters, then remove any unclear values. Then I rename them Control, and Treatment_X, to make the final outputs easier to read.
+
+```{r}
+
+vit <- mutate(vit,
+           sup = str_to_upper(sup),
+           sup = str_trim(sup)
+           )
+
+vit <- filter(vit, sup == "A" | sup == "B" | sup == "C" | sup == "D" | sup == "CONTROL")
+
+vit <- mutate(vit,
+              sup = replace(sup, treat ==0, "Control"),
+              sup = replace(sup, sup == "A", "Treatment_A"),
+              sup = replace(sup, sup == "B", "Treatment_B"),
+              sup = replace(sup, sup == "C", "Treatment_C"),
+              sup = replace(sup, sup == "D", "Treatment_D")
+              )
+
+```
+
+### Checking for Duplicates
+
+It is best practice to attach a unique observation id for each entry in a survey, often a housheold ID or respondent ID. Unfortunately, this experimenter did not create an id for every observation (respondent in this case). This makes it impossible to be sure I have found all duplicate observations, since two subjects could have received the same treatment and used the same number of seconds by chance. However, I can check for consecutive duplicates with the following code that finds consecutive duplicates then prints those observations.
+
+```{r}
+
+vit<- mutate(vit,
+             dup = FALSE,
+             dup = replace(dup, sup==lead(sup) & sec==lead(sec), TRUE))
+
+print(filter(vit, dup == TRUE | lag(dup==TRUE)))
+
+```
+
+Good, only one value is a duplicate. But is this value a duplicate? Let's check the original values.
+
+```{r}
+
+vit2 <- read_csv("vitamins\\vitamins.csv")
+
+print(filter(vit2, rownames(vit2) == 337 | rownames(vit2) == 338))
+
+```
+
+These two observations are suspicious, as it woudl be easy for an enumerator to accidentally enter the same value twice. But since these enumerators are fictional, I cannot call them up and ask about the observations. Therefore, I will keep it in the data.
+
+After cleaning, out cleaned data looks like this.
+
+```{r}
+kable(head(vit))  %>% kable_styling(bootstrap_options = c("striped", "hover", "responsive")) %>% scroll_box(width = "100%", height = "250px")
+```
+
+# Data Analysis
+
+### Visualizing the Results
+
+Now that the data is clean, I can begin analysis. But, before begining any formal tests of significance, it is valuable to visualize our results. This will help us to check that everything is running smoothly and to contextualize any findings. Because this data set is quite narrow, a simple boxplot provides the most important information.
+
+```{r}
+
+g <- ggplot(vit, mapping = aes(sup, sec))
+g + geom_boxplot() +
+  labs(title="Time to complete problem set by supplement provided", x="Time taken to coplete mental math problems", y= "Supplement category") +
+  theme_pander() + scale_fill_pander()
+
+```
+
+Just from reading the boxplot, I can make a few preliminary conclusions.
+
+1. Subjects who took supplements A, B, and D all performed the test faster than subjects who took the control. In the next section, I will determine if this result is significant.
+
+2. Subjects who took supplement C actually performed the mental math more slowly. I know that our test will not present evidence that it is effective.
+
+3. The variance in the control group seems to higher than the treatment groups. Several participants in the control group completed the trial in less than 50 seconds. This may suggest problems in the experimental design, and would normally be reason to contact the enumerators.
+
+### Testing for Signficance
+
+To test the effectiveness of the supplements, I use an independent two-sample t-test. By convention, I set my signficance threshold a to $\alpha$ = .05. Each t-test compares a supplement, independent of the others, to our control group.
+
+```{r, collapse=TRUE, warning=FALSE, message=FALSE}
+
+attach(vit)
+
+t.test(sec[sup=="Control"], sec[sup=="Treatment_A"], alternative = "less", data = vit)
+t.test(sec[sup=="Control"], sec[sup=="Treatment_B"], alternative = "less", data = vit)
+t.test(sec[sup=="Control"], sec[sup=="Treatment_C"], alternative = "less", data = vit)
+t.test(sec[sup=="Control"], sec[sup=="Treatment_D"], alternative = "less", data = vit)
+
+```
+
+For each t-test there is a hypothesis and a null hypothesis. The hypothesis is that the supplements improved mental math speed (reduced the number of seconds) and the null hypothesis is that there was no effect. The quickest number to look at here is the p-value, which is that chance of these results occuring if the null value is true.
+
+Supplements A and B both have p-values above .95. This means these results would be unlikely (occuring in only one int twenty trials), if the supplement was not improving math ability. It does not prove the supplements are effective, but it suggests that they are. That these results are also dependent n the fairness fo the trial and soundness of the design.
+
+For C and D, I cannot eliminate the null hypothesis that the supplements have no effect. It is unlikely, but not impossible, that this result was an aberration of our study and future, more detailed work would find a different result.
