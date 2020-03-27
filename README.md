@@ -9,7 +9,9 @@ I hope you enjoy exploring the data alongside me.
 
      - [Inferential Statistics: Does a dietary supplement make people smarter?](https://rpubs.com/tliptrot/581110): A dietary supplement marketer has organized a study to investigate the effects of their product. They had randomly assigned students take different supplements or none, then complete mental math problems as fast as they good. But did the supplements really make people smarter?
 
-- Attitudes toward
+     - [Visualizing Survey Data and Linear Regression - Attitudes toward Syrian refugees among rural Jordanians](https://rpubs.com/tliptrot/567264): Uses survey data from humanitarians to vizualize correlations between demographic characteristics and attitudes toward refugees. What subsets of Jordanians have particularly trusting attitudes toward Jordanians?
+
+     - 
 
 - ### Python
 
