@@ -1,0 +1,44 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+### Trust in government by tribe
+
+Now let us repeat that same analysis, this time using trust in the state. We have 5 survey questions that investiate trust of government actors, refering to municipal council members, mayors, the local council, the police and the governor. The first three actors are local political actors, who are often elected through tribal politics. The police and the governor are nationally appointed figures, and the governor in particular is associated with the security apparatus. The colloquial term for governor, interestingly, is "basha", from the Ottoman Turkish "pasha".
+
+This code assigns three new values to each observation. One for the sum of all trust across each actor
+
+```{r}
+
+ggplot(dams_fct) + geom_bar(aes(x=fct_relevel(q4_4_10_actor_trust_the_police, trust_lev),fill=fct_relevel(q4_4_10_actor_trust_the_governor, trust_lev)), height = 1) + coord_flip() +
+  labs(title = "Trust in Syrians In Respondents", y = "Number of Respondents", x = "Degree of Trust") +
+  theme(legend.title=element_blank()) + scale_fill_brewer()
+```
+
+
+```{r}
+
+glimpse(select(dams_fct3, contains("trust") & -contains("/")))
+
+gov_trust <- dams_fct %>% fct_relevel() 
+
+dams_fct3 <- dams_fct %>% mutate(atg = fct_rev(fct_relevel(q4_4_11_actor_trust_syrians, trust_lev))
+#                                 atlg = fct_rev(fct_relevel(q4_4_11_actor_trust_syrians, trust_lev)),
+                                 atng = fct_rev(fct_relevel(q4_4_11_actor_trust_syrians, trust_lev)),
+                                 tribe = fct_lump_min(q2_20_tribe, min=20, other_level = "other"),
+                                 contact = as.character(q4_1_8_syrians),
+                                 contact_point = ifelse(contact=="at_least_once_a_week"|contact=="at_least_once_a_month", 1,0))
+
+rtribe_contact <- dams_fct3 %>%
+  group_by(tribe) %>%
+  summarise(
+    trust = mean(as.numeric(ats), na.rm = TRUE) - 3,
+   contact = 100 * mean(contact_point),
+    n = n()
+  )
+
+relat <- ggplot(rtribe_contact, aes(x=contact, y=trust, label=tribe))
+relat + geom_point() + geom_text(aes(label=tribe),hjust=0, vjust=0) +
+    labs(title = "Tribes by Trust and Contact", x = "Portion Reporting Monthly or Weekly Contact with Syrians", y = "Ratio of Trusting Respondents to Distrusting") + 
+  theme(legend.title=element_blank()) + scale_fill_brewer()
+
