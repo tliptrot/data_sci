@@ -7,7 +7,7 @@ I hope you enjoy exploring the data alongside me.
 
 - ### R
 
-        - [Inferential Statistics: Does a dietary supplement make people smarter?](https://rpubs.com/tliptrot/581110) A dietary supplement marketer has organized a study to investigate the effects of their product. They had randomly assigned students take different supplements or none, then complete mental math problems as fast as they good. But did the supplements really make people smarter?
+     - [Inferential Statistics: Does a dietary supplement make people smarter?](https://rpubs.com/tliptrot/581110): A dietary supplement marketer has organized a study to investigate the effects of their product. They had randomly assigned students take different supplements or none, then complete mental math problems as fast as they good. But did the supplements really make people smarter?
 
 - Attitudes toward
 
