@@ -13,5 +13,7 @@ I hope you enjoy exploring the data alongside me.
 
      - [Data Vizualization: The Natural Resource Curse](https://rpubs.com/tliptrot/593873): In this demo, I will make an economist style plot from a multiple country linear regression. For my data I will use country level data from the seminal paper "Natural Resource Abundance and Economic Growth" by Sachs and Warner, which argued that the presence of natural resources in a country caused lower growth.
 
+     - [Data Vizualization: Covid Cases by Country (WIP)]() In this demo, I plot the log of total confirmed cases against days since first 5 cases found for a representative sample of countries.
+
 - ### Python
 
