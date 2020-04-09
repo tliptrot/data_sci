@@ -5,6 +5,10 @@ I hope you enjoy exploring the data alongside me.
 
 ## Contents
 
+- ### Python
+
+     - [Supervised Learning Project: Predicting Political Attitudes with Developing Country Government Data](): This code attempts to create a model which uses administrative data available to authoritarian developing states to predict attitudes toward the authoritarian regime, with supervised learning. The data used comes from a social cohesion survey conducted in Armenia in 2011. The survey results are cleaned to retain only data related to services received from the state, biometric data, and state-citizen interaction data. The degree of trust toward the president and head of the Republic Party of Armenia serves as the Y value. The models produced have very poor performance and cannot plausible be useful. It is unclear if the poor performance of the models is caused by the inadequacy of the data or poor model design. Results are inconclusive, and are meant purely as a demonstration of grasp of machine learning concepts.
+
 - ### R
 
      - [Inferential Statistics: Does a dietary supplement make people smarter?](https://rpubs.com/tliptrot/581110): A dietary supplement marketer has organized a study to investigate the effects of their product. They had randomly assigned students take different supplements or none, then complete mental math problems as fast as they good. But did the supplements really make people smarter?
