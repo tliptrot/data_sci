@@ -9,6 +9,8 @@ I hope you enjoy exploring the data alongside me.
 
      - [Supervised Learning Project: Predicting Political Attitudes with Developing Country Government Data](https://github.com/casbahboy/data_sci/blob/master/Python/supervised_learning_project:_predictiving_politicla_attitudes.ipynb): This code attempts to create a model which uses administrative data available to authoritarian developing states to predict attitudes toward the authoritarian regime, with supervised learning. The data used comes from a social cohesion survey conducted in Armenia in 2011. Results are inconclusive, and are meant purely as a demonstration of grasp of machine learning concepts.
 
+     - [Supervised Learning Project: Titanic Predictor](): The classic titanic prediction model. It takes data from the actual ship log of the titanic in which the survival status of on fifth of the passengers has been removed. Training a model using the the other 4/5ths of passengers, including their embarkation, age, gender, class and number of children, I create a model that predicts survival with an AOC of .8 .
+
 - ### R
 
      - [Inferential Statistics: Does a dietary supplement make people smarter?](https://rpubs.com/tliptrot/581110): A dietary supplement marketer has organized a study to investigate the effects of their product. They had randomly assigned students take different supplements or none, then complete mental math problems as fast as they good. But did the supplements really make people smarter?
