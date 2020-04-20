@@ -5,12 +5,6 @@ I hope you enjoy exploring the data alongside me.
 
 ## Contents
 
-- ### Python
-
-     - [Supervised Learning Project: Predicting Political Attitudes with Developing Country Government Data](https://github.com/tliptrot/data_sci/blob/master/Python/supervised_learning_project:_predictiving_politicla_attitudes.ipynb): This code attempts to create a model which uses administrative data available to authoritarian developing states to predict attitudes toward the authoritarian regime, with supervised learning. The data used comes from a social cohesion survey conducted in Armenia in 2011. Results are inconclusive, and are meant purely as a demonstration of grasp of machine learning concepts.
-
-     - [Supervised Learning Project: Titanic Predictor](https://github.com/tliptrot/data_sci/blob/master/titanic_python_simplified.ipynb): The classic titanic prediction model. It takes data from the actual ship log of the titanic in which the survival status of on fifth of the passengers has been removed. Training a model using the the other 4/5ths of passengers, including their embarkation, age, gender, class and number of children, I create a model that predicts survival with an AOC of .8 .
-
 - ### R
 
      - [How Fast is COVID 19 growing in the US?](https://rpubs.com/tliptrot/596250) The other day my mom asked me "Tim, how quickly is covid actually spreading", and I realized this is actually a difficult question to answer. People are used to thinking about geometric growth, the staight lines of $y = mx + b$. But the behavior of a virus in the early stage of an epidemic is close to exponential growth, $y = e^{ax}$. This demonstration uses some simple graphing and fitting to teach readers about the growth of COVID-19 in the US over the past two months.
@@ -20,6 +14,7 @@ I hope you enjoy exploring the data alongside me.
      - [Visualizing Survey Data and Linear Regression - Attitudes toward Syrian refugees among rural Jordanians](https://rpubs.com/tliptrot/567264): Uses survey data from humanitarians to vizualize correlations between demographic characteristics and attitudes toward refugees. What subsets of Jordanians have particularly trusting attitudes toward Jordanians?
 
      - [Data Vizualization: The Natural Resource Curse](https://rpubs.com/tliptrot/593873): In this demo, I will make an economist style plot from a multiple country linear regression. For my data I will use country level data from the seminal paper "Natural Resource Abundance and Economic Growth" by Sachs and Warner, which argued that the presence of natural resources in a country caused lower growth.
-
+     
 - ### Python
 
+     - [Supervised Learning Project: Predicting Political Attitudes with Developing Country Government Data](https://github.com/tliptrot/data_sci/blob/master/Python/supervised_learning_project:_predictiving_politicla_attitudes.ipynb): This code attempts to create a model which uses administrative data available to authoritarian developing states to predict attitudes toward the authoritarian regime, with supervised learning. The data used comes from a social cohesion survey conducted in Armenia in 2011. Results are inconclusive, and are meant purely as a demonstration of grasp of machine learning concepts.
