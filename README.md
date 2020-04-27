@@ -13,7 +13,7 @@ I hope you enjoy exploring the data alongside me.
 
      - [Visualizing Survey Data and Linear Regression - Attitudes toward Syrian refugees among rural Jordanians](https://rpubs.com/tliptrot/567264): Uses survey data from humanitarians to vizualize correlations between demographic characteristics and attitudes toward refugees. What subsets of Jordanians have particularly trusting attitudes toward Jordanians?
 
-     - [Data Vizualization: The Natural Resource Curse](https://rpubs.com/tliptrot/593873): In this demo, I will make an economist style plot from a multiple country linear regression. For my data I will use country level data from the seminal paper "Natural Resource Abundance and Economic Growth" by Sachs and Warner, which argued that the presence of natural resources in a country caused lower growth.
+     - [Data Visualization: The Natural Resource Curse](https://rpubs.com/tliptrot/593873): In this demo, I will make an economist style plot from a multiple country linear regression. For my data I will use country level data from the seminal paper "Natural Resource Abundance and Economic Growth" by Sachs and Warner, which argued that the presence of natural resources in a country caused lower growth.
      
 - ### Python
 
