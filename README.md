@@ -1,5 +1,5 @@
-# Data Science Portfolio
-A portfolio of data science projects I created to grow my coding skills in R and Python. While I address several different topics, my projects cluster around  focuses on international development and humanitarian data and the politics of fragile states.
+# Portfolio, Data Analysis, Data Engineering, Spatial Analysis and Policy Research
+A portfolio of projects I created to grow my coding skills in R, Python, ArcMap and Powerpoint. While I address several different topics, my projects cluster around  focuses on international development and humanitarian data and the politics of fragile states.
 
 I hope you enjoy exploring the data alongside me.
 
@@ -18,3 +18,7 @@ I hope you enjoy exploring the data alongside me.
 - ### Python
 
      - [Supervised Learning Project: Predicting Political Attitudes with Developing Country Government Data](https://github.com/tliptrot/data_sci/blob/master/Python/supervised_learning_project:_predictiving_politicla_attitudes.ipynb): This code attempts to create a model which uses administrative data available to authoritarian developing states to predict attitudes toward the authoritarian regime, with supervised learning. The data used comes from a social cohesion survey conducted in Armenia in 2011. Results are inconclusive, and are meant purely as a demonstration of grasp of machine learning concepts.
+
+- ### ArcMap
+
+     - 
