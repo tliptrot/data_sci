@@ -10,7 +10,7 @@ Objective - For each district, find the proportion of winning candidates who com
 
 First, I need electoral data. Developing countries tend to release data through their "Official Journal", which is a sort of newspaper that the government publishes regularly with important announcements. The base data for candidates looks like this 
 
-![Algerian Official Journal](images/algeria_img_1.jpg)
+![Algerian Official Journal](images/algeria_img_2.png)
 
 I transform it into a CSV and massage it into an appropriate format. This snippet creates the Candidates table and uploads from the CSV.
 
