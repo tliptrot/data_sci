@@ -12,6 +12,8 @@ output:
   html_document:
     df_print: paged
     toc: yes
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r, collapse=TRUE, eval=TRUE, include=FALSE, echo=FALSE, results = 'hide'}
