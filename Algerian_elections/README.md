@@ -2,7 +2,9 @@
 
 Part of my dissertation demonstrated a thoery linking water access to party system formation in the Middle East. Regions with limited water tend to practice nomadic pastoralism, which involves moving frequently through the desert with vulnerable cattle herds. To protect themselves, pastoralists tend to build very strong kin networks called tribes or clans encompassing tens or hundreds of thousands of "cousins". Today, these tribes are effective electoral vehicles and "compete" with parties for votes and political space. For example, Saudi Arabia is a "clan" state in the same way the Soviet Union was a "party state". I needed to show that this pattern is observable across different regions within the same state, so I turned to Algeria.
 
-Algeria's 2020 elections saw approximately 20\% of seats go to independent, tribal candidates. I want to show that these independents come mainly from Algeria's arid, pastoralist south and not the wet, farmer-dominated north. However, proving that would require aggregating data from candidates, parties, districts and climate datasets all together. I decided to use this opportunity to show of my skills integrating data in different formats, particularly in SQL and Python.
+Algeria's 2020 elections saw approximately 20\% of seats go to independent, tribal candidates. I want to show that these independents come mainly from Algeria's arid, pastoralist south and not the wet, farmer-dominated north. 
+
+The problem is that Algeria has very poor data, so everything I use will need to be scraped, transformed, and aggregated into a coherent rectangular dataset. I need to aggregate data from candidates, parties, districts and climate datasets all together. I decided to use this opportunity to show of my skills integrating data in different formats, particularly in SQL and Python.
 
 Objective - For each district, find the proportion of winning candidates who come from small/independent party lists, and merge that with climate data for each district.
 
@@ -166,31 +168,108 @@ SELECT * FROM wl;
 
 ## Climate data
 
-Next, I need to 
+Next, I need to integrate the climate data. It comes as a NetCDF file, which is quite difficult to work with.
 
+```python
+import netCDF4 as nc
+import xarray as xr
+import pandas as pd
+from scipy.spatial import cKDTree
+import numpy as np
 
-## Contents
+import geopandas as gpd
+import matplotlib.pyplot as plt
 
-- ### R
+# Path to the GADM shapefile (replace with the actual path)
+shapefile_path = 'C:/Users/liptr/Box/academic/Thesis/pastoralism_paper/algeria/gadm41_DZA_shp/gadm41_DZA_1.shp'
 
-     - [How Fast is COVID 19 growing in the US?](https://rpubs.com/tliptrot/596250) The other day my mom asked me "Tim, how quickly is covid actually spreading", and I realized this is actually a difficult question to answer. People are used to thinking about geometric growth, the staight lines of $y = mx + b$. But the behavior of a virus in the early stage of an epidemic is close to exponential growth, $y = e^{ax}$. This demonstration uses some simple graphing and fitting to teach readers about the growth of COVID-19 in the US over the past two months.
-     
-     - [Inferential Statistics: Does a dietary supplement make people smarter?](https://rpubs.com/tliptrot/581110): A dietary supplement marketer has organized a study to investigate the effects of their product. They had randomly assigned students take different supplements or none, then complete mental math problems as fast as they good. But did the supplements really make people smarter?
+# Load the shapefile using geopandas
+gdf = gpd.read_file(shapefile_path)
 
-     - [Visualizing Survey Data and Linear Regression - Attitudes toward Syrian refugees among rural Jordanians](https://rpubs.com/tliptrot/567264): Uses survey data from humanitarians to vizualize correlations between demographic characteristics and attitudes toward refugees. What subsets of Jordanians have particularly trusting attitudes toward Jordanians?
+# Inspect the data to ensure it contains the correct boundaries
+print(gdf.head())
 
-     - [Data Visualization: The Natural Resource Curse](https://rpubs.com/tliptrot/593873): In this demo, I will make an economist style plot from a multiple country linear regression. For my data I will use country level data from the seminal paper "Natural Resource Abundance and Economic Growth" by Sachs and Warner, which argued that the presence of natural resources in a country caused lower growth.
-     
-- ### Python
+# Plot the administrative boundaries
+gdf.plot()
 
-     - [Supervised Learning Project: Predicting Political Attitudes with Developing Country Government Data](https://github.com/tliptrot/data_sci/blob/master/Python/supervised_learning_project:_predictiving_politicla_attitudes.ipynb): This code attempts to create a model which uses administrative data available to authoritarian developing states to predict attitudes toward the authoritarian regime, with supervised learning. The data used comes from a social cohesion survey conducted in Armenia in 2011. Results are inconclusive, and are meant purely as a demonstration of grasp of machine learning concepts.
+# Show the plot
+plt.show()
 
-- ### ArcMap
+# Plot the boundaries with a color map and add labels
+fig, ax = plt.subplots(figsize=(10, 10))
 
-     - [Refugee Assistance Programming in Northern Jordan](https://github.com/tliptrot/data_sci/blob/master/spatiala_analysis_and_visualization/Reach%20Mafraq%20local%20map_28.pdf): This thematic map was produced for Agency France for Technical Assistance (ACTED) to advertsie the breadth of their programming to prospective funders. They also mounted it on the walls in their field offices, which I was flattered by.
-     
-- ### Powerpoints
+# Plot the boundaries with a specific color map (e.g., 'Set3')
+gdf.plot(ax=ax, cmap='Set3', edgecolor='black')
 
-	- [Parents First Advising Sample](https://github.com/casbahboy/Non-Profit-Research/blob/master/Parents%20First%20M%26E%20Advising%20Sample.pptx): This is a powerpoint presentation written for a fictional charity in Cote D'Ivoire that wants to improve their impact on early childhood development. It describes some of the current issues in their monitoring program and advises on practical next steps in targeting data and impact evaluation. It was written as a timed skills-test for Innovations for Poverty Action, so it was completed in just two hours.
+# Add labels to the map for each wilaya (if available)
+for idx, row in gdf.iterrows():
+    plt.annotate(s=row['NAME_1'], xy=row['geometry'].centroid.coords[0], 
+                 horizontalalignment='center', fontsize=8)
 
-  - [Dams of Jordan Social Cohesion and Area Mapping Report](https://github.com/casbahboy/Non-Profit-Research/blob/master/Dams%20of%20Jordan%20Social%20Cohesion%20and%20Area%20Mapping%20Report.pptx) : This powerpoint presentation describes surveys for location targeting in rural Jordan. The survey was commissioned after violence between community members and refugee cash for workers threatened the viability of GIZ's programming. It was given to GIZ and Jordanian Ministry of Water Staff.
+# Show the plot
+plt.show()
+
+# Calculate the centroids for each wilaya
+gdf['centroid'] = gdf.geometry.centroid
+
+# Extract the latitude (Y) and longitude (X) of the centroids
+gdf['centroid_lat'] = gdf.centroid.y
+gdf['centroid_lon'] = gdf.centroid.x
+
+# Create a new dataframe with wilaya names, centroid latitudes, and longitudes
+centroids_df = gdf[['NAME_1', 'centroid_lat', 'centroid_lon']].copy()
+
+# Rename the columns for clarity
+centroids_df.columns = ['wilaya_name', 'centroid_lat', 'centroid_lon']
+
+# Function to round to the nearest 0.25 degrees
+def round_to_nearest_025(x):
+    return round(x * 4) / 4
+  
+centroids_df['rounded_lat'] = centroids_df['centroid_lat'].apply(round_to_nearest_025)
+centroids_df['rounded_lon'] = centroids_df['centroid_lon'].apply(round_to_nearest_025)
+
+centroids_df
+
+#------------ Integrating climate data ----------------#
+
+netcdf_file = 'C:/Users/liptr/Box/academic/Thesis/pastoralism_paper/climate_data_algeria/climatology-pr-period-mean_era5-x0.25_era5-x0.25-historical_climatology_mean_1985-2014.nc'
+nc_data = xr.open_dataset(netcdf_file)
+
+# Extract latitude, longitude, and precipitation variables from the NetCDF data
+precipitation = nc_data['climatology-pr-period-mean']
+
+# Use xarray to extract the precipitation at these specific coordinates
+precip_values = []
+for _, row in centroids_df.iterrows():
+    lat = row['rounded_lat']
+    lon = row['rounded_lon']
+    
+    precip_value = precipitation.sel(lat=lat, lon=lon, method='nearest').values[0]
+    precip_values.append(precip_value)
+
+centroids_df['precipitation'] = precip_values
+
+```
+
+Now I just have to merge the two datasets by wilayat name and I am done. I did that in the regressions files in R, but this demo is already too long so I do not include that.
+
+I did make a few cut maps of the districts colored by their precipitation and the independent portion of elected.s
+
+```python
+# Join the precipitation data to the GeoDataFrame based on wilaya_name
+gdf = gdf.merge(centroids_df[['wilaya_name', 'precipitation']], left_on='NAME_1', right_on='wilaya_name')
+
+fig, ax = plt.subplots(1, 1, figsize=(10, 10))
+gdf.plot(column='precipitation', ax=ax, legend=True, cmap='Blues', edgecolor='black')
+ax.set_title('Precipitation by Wilaya in Algeria', fontsize=15)
+ax.set_axis_off()
+
+plt.show()
+```
+
+![Algeria Precipitation Map](images/precipitation_algeria_map.png)
+
+I apply the same process to the independent seatshare by district to get a similar map.
+
+![Algeria Independent Seat Share Map](images/independent_map_algeria.png)
