@@ -268,8 +268,8 @@ ax.set_axis_off()
 plt.show()
 ```
 
-![Algeria Precipitation Map](images/precipitation_algeria_map.png)
+![Algeria Precipitation Map](images/precipitation_map_algeria.png)
 
 I apply the same process to the independent seatshare by district to get a similar map.
 
-![Algeria Independent Seat Share Map](images/independent_map_algeria.png)
+![Algeria Independent Seat Share Map](images/independents_map_algeria.png)
